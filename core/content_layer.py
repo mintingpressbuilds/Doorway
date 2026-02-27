@@ -16,11 +16,13 @@ HEDGING_WORDS = ["might", "could", "possibly", "perhaps", "unclear",
                  "uncertain", "depends", "varies", "sometimes", "generally"]
 UNCONDITIONAL_WORDS = ["always", "never", "all", "every", "must",
                        "impossible", "certain", "definitely"]
+# Stricter subset for answer text — "all", "every", "must" are too common in descriptive language
+ANSWER_UNCONDITIONAL = ["always", "never", "impossible", "certain", "definitely"]
 
 
 def extract_implication(answer_text, input_text=None):
     text_lower = answer_text.lower()
-    unconditional = any(w in text_lower for w in UNCONDITIONAL_WORDS)
+    unconditional = any(w in text_lower for w in ANSWER_UNCONDITIONAL)
     hedged = any(w in text_lower for w in HEDGING_WORDS)
     # Phase 8 tuning: also check original input for unconditional claims (always/never).
     # If the input itself makes an unconditional claim, the implication is unconditional
@@ -67,7 +69,8 @@ def run(input_text):
             answer = data["content"][0]["text"]
             word_count = len(answer.split())
             hedge_count = sum(1 for w in HEDGING_WORDS if w in answer.lower())
-            confidence = round(max(0.3, min(0.95, (word_count / 80) - (hedge_count * 0.08))), 2)
+            base = min(0.95, 0.85 + (word_count / 200))
+            confidence = round(max(0.3, base - (hedge_count * 0.1)), 2)
             return {
                 "answer": answer,
                 "confidence": confidence,
