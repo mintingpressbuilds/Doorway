@@ -23,7 +23,7 @@ def _reasoning_core(input_text):
     # Status determination with content-leads path
     if not structure["fires"] and not conflict["conflict"] and content["confidence"] > 0.75:
         status = "GROUND"
-    elif (structure["gap_score"] > 0.8 and not conflict["conflict"]
+    elif (structure["gap_score"] > 0.9 and not conflict["conflict"]
           and content["confidence"] > 0.85 and content["success"]):
         status = "GROUND"  # Content-leads: no shape relevant, content highly confident
     elif conflict["conflict"]:

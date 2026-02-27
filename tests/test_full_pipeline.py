@@ -28,10 +28,10 @@ class TestStatusGround:
         assert r["structure"]["fires"] is False
 
     def test_content_leads_high_gap(self):
-        """gap_score > 0.8 + content > 0.85 + no conflict → GROUND."""
-        r = run_patched("What is the boiling point of water?", 0.90, "conditional")
+        """gap_score > 0.9 + content > 0.85 + no conflict → GROUND."""
+        r = run_patched("How many days are in a week?", 0.90, "conditional")
         assert r["status"] == "GROUND"
-        assert r["structure"]["gap_score"] > 0.8
+        assert r["structure"]["gap_score"] > 0.9
 
     def test_content_leads_no_shape_match(self):
         r = run_patched("What time is it?", 0.90, "conditional")
@@ -144,9 +144,9 @@ CONTENT_SIMS = {
 }
 
 TEST_INPUTS = [
-    ("How does compound interest work?", "GROUND"),
-    ("What is the boiling point of water?", "GROUND"),
-    ("How does a supply chain work?", "GROUND"),
+    ("How does compound interest work?", "BRIDGE"),
+    ("What is the boiling point of water?", "BRIDGE"),
+    ("How does a supply chain work?", "BRIDGE"),
     ("What time is it?", "GROUND"),
     ("Is the sky blue?", "GROUND"),
     ("How does a startup's reputation compound in a new market?", "BRIDGE"),
