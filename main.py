@@ -7,7 +7,8 @@ from pruv import xy_wrap
 from core import gap_detector, bridge_builder, content_layer, conflict_detector, chain as chain_module
 load_dotenv()
 
-PRUV_API_KEY = os.getenv("PRUV_API_KEY")
+_raw_key = os.getenv("PRUV_API_KEY")
+PRUV_API_KEY = _raw_key if _raw_key and _raw_key != "pv_live_your_key_here" else None
 
 @xy_wrap(
     chain_name="doorway_agi", auto_redact=True,

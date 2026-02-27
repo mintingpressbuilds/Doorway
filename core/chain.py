@@ -5,7 +5,8 @@
 import os
 from pruv import xy_wrap, CloudClient, XYChain
 
-PRUV_API_KEY = os.getenv("PRUV_API_KEY")  # None in local dev — that's fine
+_raw_key = os.getenv("PRUV_API_KEY")
+PRUV_API_KEY = _raw_key if _raw_key and _raw_key != "pv_live_your_key_here" else None
 
 
 def get_wrapper(chain_name="doorway_agi"):
