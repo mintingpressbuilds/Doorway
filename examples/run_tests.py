@@ -10,9 +10,9 @@ from main import run
 
 TEST_INPUTS = [
     # Known territory — gap quiet or content leads
-    ("How does compound interest work?", "GROUND"),
-    ("What is the boiling point of water?", "GROUND"),
-    ("How does a supply chain work?", "GROUND"),
+    ("How does compound interest work?", "BRIDGE"),       # growth_system applies
+    ("What is the boiling point of water?", "BRIDGE"),     # threshold_system applies
+    ("How does a supply chain work?", "BRIDGE"),           # cascade_system applies
     ("What time is it?", "GROUND"),
     ("Is the sky blue?", "GROUND"),
     # Adjacent territory — gap fires, bridge built
