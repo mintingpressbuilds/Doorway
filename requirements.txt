@@ -1,0 +1,7 @@
+anthropic
+xycore
+pruv
+pytest
+python-dotenv
+fastapi
+uvicorn
