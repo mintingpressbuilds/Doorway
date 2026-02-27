@@ -16,7 +16,7 @@ SHAPE_LIBRARY = {
                            "snowball", "reinvest", "viral", "spread", "grow"],
         "geometric_prediction": "output increases non-linearly over time",
         "implication_type": "increases",
-        "analogs": ["compound_interest", "viral_spread", "learning_curves"],
+        "analogs": ["compound_interest", "viral_spread", "nuclear_chain_reaction"],
         "constraints": ["requires_base", "bounded_by_environment"],
         "color_dimensions": {"rate": "slow_to_fast", "bound": "bounded_or_unbounded",
                              "reversibility": "reversible_or_permanent"}
@@ -30,7 +30,7 @@ SHAPE_LIBRARY = {
                            "supply", "demand", "neutral", "stable"],
         "geometric_prediction": "system returns to center after disruption",
         "implication_type": "conditional",
-        "analogs": ["market_pricing", "ecosystem_balance", "homeostasis"],
+        "analogs": ["market_pricing", "homeostasis", "thermal_equilibrium"],
         "constraints": ["requires_multiple_forces", "disruption_causes_cascade"],
         "color_dimensions": {"stability": "fragile_to_resilient", "recovery_speed": "fast_to_slow"}
     },
@@ -43,7 +43,7 @@ SHAPE_LIBRARY = {
                            "trigger", "downstream", "ripple", "knock"],
         "geometric_prediction": "effect amplifies through chain until terminus",
         "implication_type": "conditional",
-        "analogs": ["bank_runs", "viral_infection", "supply_chain_failure"],
+        "analogs": ["bank_runs", "viral_infection", "nuclear_fission_chain"],
         "constraints": ["requires_dependency", "terminus_limits_spread"],
         "color_dimensions": {"speed": "slow_to_fast", "reversibility": "reversible_or_permanent"}
     },
@@ -56,7 +56,7 @@ SHAPE_LIBRARY = {
                            "refine", "metabolize", "translate", "encode"],
         "geometric_prediction": "input consumed, new form produced, conservation holds",
         "implication_type": "conditional",
-        "analogs": ["photosynthesis", "manufacturing", "digestion"],
+        "analogs": ["photosynthesis", "oil_refining", "nuclear_fusion"],
         "constraints": ["requires_catalyst", "conservation_law_holds"],
         "color_dimensions": {"efficiency": "lossy_to_efficient", "reversibility": "reversible_or_permanent"}
     },
@@ -69,7 +69,7 @@ SHAPE_LIBRARY = {
                            "power", "rank", "structure", "chain of command"],
         "geometric_prediction": "decisions flow down, information flows up",
         "implication_type": "conditional",
-        "analogs": ["government", "corporate_structure", "military"],
+        "analogs": ["corporate_structure", "neural_hierarchy", "atomic_orbital_structure"],
         "constraints": ["apex_controls_flow", "layer_removal_cascades"],
         "color_dimensions": {"rigidity": "flexible_to_rigid", "delegation": "centralized_to_distributed"}
     },
@@ -82,7 +82,7 @@ SHAPE_LIBRARY = {
                            "efficient", "features", "choice", "options", "best"],
         "geometric_prediction": "returns diminish past threshold — unconditional claims are false",
         "implication_type": "threshold",
-        "analogs": ["diminishing_returns", "paradox_of_choice", "feature_bloat"],
+        "analogs": ["diminishing_returns", "enzyme_saturation", "antenna_gain_limits"],
         "constraints": ["threshold_exists", "past_peak_returns_decrease"],
         "color_dimensions": {"threshold_sharpness": "gradual_to_sharp", "recovery": "recoverable_or_permanent"}
     },
@@ -95,7 +95,7 @@ SHAPE_LIBRARY = {
                            "startup", "credit", "social", "capital", "track record"],
         "geometric_prediction": "friction decreases as credibility accumulates",
         "implication_type": "increases",
-        "analogs": ["credit_score", "brand_reputation", "social_capital"],
+        "analogs": ["credit_score", "immune_memory", "superconductor_transition"],
         "constraints": ["slow_to_build", "fast_to_destroy"],
         "color_dimensions": {"transferability": "local_to_universal", "fragility": "robust_to_fragile"}
     },
@@ -108,7 +108,7 @@ SHAPE_LIBRARY = {
                            "amplify", "iterate", "compound", "accumulate"],
         "geometric_prediction": "positive feedback amplifies instability, negative feedback stabilizes",
         "implication_type": "conditional",
-        "analogs": ["microphone_feedback", "inflation_spiral", "learning"],
+        "analogs": ["microphone_feedback", "inflation_spiral", "hormonal_regulation"],
         "constraints": ["positive_feedback_unstable", "negative_feedback_stabilizes"],
         "color_dimensions": {"polarity": "positive_or_negative", "speed": "fast_to_slow"}
     },
@@ -125,7 +125,7 @@ SHAPE_LIBRARY = {
                            "hoard", "premium", "exclusive", "supply"],
         "geometric_prediction": "value increases as supply decreases relative to demand",
         "implication_type": "increases",
-        "analogs": ["resource_competition", "commodity_pricing", "energy_conservation"],
+        "analogs": ["commodity_pricing", "oxygen_competition", "energy_conservation"],
         "constraints": ["requires_finite_supply", "demand_must_exist"],
         "color_dimensions": {"renewability": "renewable_to_exhaustible", "substitutability": "substitutable_to_unique"}
     },
@@ -138,7 +138,7 @@ SHAPE_LIBRARY = {
                            "social", "web", "mesh", "interconnect"],
         "geometric_prediction": "value grows non-linearly as connections increase",
         "implication_type": "increases",
-        "analogs": ["neural_networks", "social_platforms", "crystalline_structures"],
+        "analogs": ["neural_networks", "trade_networks", "crystalline_structures"],
         "constraints": ["requires_multiple_nodes", "connection_cost_exists"],
         "color_dimensions": {"density": "sparse_to_dense", "centralization": "distributed_to_centralized"}
     },
@@ -281,7 +281,7 @@ SHAPE_LIBRARY = {
                            "punish", "expel", "project", "redirect"],
         "geometric_prediction": "tension temporarily relieved but root cause unaddressed leads to recurrence",
         "implication_type": "conditional",
-        "analogs": ["autoimmune_response", "blame_concentration", "stress_fracture"],
+        "analogs": ["autoimmune_response", "executive_scapegoating", "stress_fracture"],
         "constraints": ["relief_is_temporary", "root_cause_persists"],
         "color_dimensions": {"visibility": "hidden_to_obvious", "recurrence": "one_time_to_chronic"}
     },
@@ -493,7 +493,7 @@ SHAPE_LIBRARY = {
                            "clone", "forge", "impersonate", "spoof"],
         "geometric_prediction": "mimicry succeeds until detection mechanisms evolve to distinguish",
         "implication_type": "conditional",
-        "analogs": ["biological_camouflage", "brand_imitation", "viral_replication"],
+        "analogs": ["biological_camouflage", "brand_imitation", "metamaterial_cloaking"],
         "constraints": ["detection_pressure_evolves_counter", "perfect_mimicry_rare"],
         "color_dimensions": {"fidelity": "crude_to_perfect", "detection_difficulty": "easy_to_hard"}
     },
@@ -506,7 +506,7 @@ SHAPE_LIBRARY = {
                            "stockpile", "hoard", "build", "accrue"],
         "geometric_prediction": "small consistent inputs produce large accumulated mass over time",
         "implication_type": "increases",
-        "analogs": ["wealth_concentration", "sediment_deposition", "gravitational_accretion"],
+        "analogs": ["wealth_concentration", "arterial_plaque_buildup", "gravitational_accretion"],
         "constraints": ["requires_consistent_input", "leakage_reduces_accumulation"],
         "color_dimensions": {"rate": "slow_to_fast", "distribution": "uniform_to_concentrated"}
     },
@@ -519,7 +519,7 @@ SHAPE_LIBRARY = {
                            "split", "extreme", "spectrum", "charge"],
         "geometric_prediction": "elements migrate toward poles depleting the neutral center",
         "implication_type": "conditional",
-        "analogs": ["magnetic_polarity", "political_polarization", "cellular_polarity"],
+        "analogs": ["magnetic_polarity", "bull_bear_market_polarity", "cellular_polarity"],
         "constraints": ["requires_two_attractors", "external_force_can_repolarize"],
         "color_dimensions": {"strength": "weak_to_strong", "symmetry": "symmetric_to_asymmetric"}
     },
@@ -597,7 +597,7 @@ SHAPE_LIBRARY = {
                            "bottle", "trap", "seal", "store"],
         "geometric_prediction": "pressure increases until release or catastrophic rupture",
         "implication_type": "threshold",
-        "analogs": ["pressure_vessels", "monopoly_pricing", "stellar_cores"],
+        "analogs": ["turgor_pressure", "monopoly_pricing", "stellar_cores"],
         "constraints": ["boundary_has_maximum_capacity", "rupture_is_catastrophic"],
         "color_dimensions": {"pressure": "low_to_critical", "boundary_strength": "weak_to_strong"}
     },
@@ -649,7 +649,7 @@ SHAPE_LIBRARY = {
                            "provoke", "retaliate", "war", "compete"],
         "geometric_prediction": "intensity increases until one party exhausts resources or breaking point reached",
         "implication_type": "increases",
-        "analogs": ["arms_races", "inflammatory_response", "nuclear_chain_reaction"],
+        "analogs": ["price_wars", "inflammatory_response", "nuclear_chain_reaction"],
         "constraints": ["requires_responsive_parties", "breaking_point_exists"],
         "color_dimensions": {"rate": "gradual_to_rapid", "destructiveness": "constructive_to_destructive"}
     },
