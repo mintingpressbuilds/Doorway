@@ -18,10 +18,17 @@ UNCONDITIONAL_WORDS = ["always", "never", "all", "every", "must",
                        "impossible", "certain", "definitely"]
 
 
-def extract_implication(answer_text):
+def extract_implication(answer_text, input_text=None):
     text_lower = answer_text.lower()
     unconditional = any(w in text_lower for w in UNCONDITIONAL_WORDS)
     hedged = any(w in text_lower for w in HEDGING_WORDS)
+    # Phase 8 tuning: also check original input for unconditional claims (always/never).
+    # If the input itself makes an unconditional claim, the implication is unconditional
+    # regardless of whether Claude hedges in the response.
+    if input_text:
+        input_lower = input_text.lower()
+        if any(w in input_lower for w in UNCONDITIONAL_WORDS):
+            return "unconditional"
     if unconditional and not hedged:
         return "unconditional"
     elif hedged:
@@ -36,7 +43,8 @@ def extract_implication(answer_text):
 
 def run(input_text):
     if not API_KEY:
-        return {"answer": "[No API key]", "confidence": 0.0, "implication": "unknown", "success": False}
+        return {"answer": "[No API key]", "confidence": 0.0,
+                "implication": extract_implication("", input_text), "success": False}
     payload = json.dumps({
         "model": MODEL,
         "max_tokens": 300,
@@ -63,13 +71,13 @@ def run(input_text):
             return {
                 "answer": answer,
                 "confidence": confidence,
-                "implication": extract_implication(answer),
+                "implication": extract_implication(answer, input_text),
                 "success": True,
             }
     except Exception as e:
         return {
             "answer": f"[Content layer error: {str(e)[:120]}]",
             "confidence": 0.0,
-            "implication": "unknown",
+            "implication": extract_implication("", input_text),
             "success": False,
         }
