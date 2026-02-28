@@ -1,8 +1,16 @@
 # Doorway
 
+Created by Luke H · [doorwayagi.com](https://doorwayagi.com)
+
 The first AI reasoning engine derived from human cognition. Geometric bridging. Honest gap detection. Verifiable reasoning chains. Every output receipted.
 
 ## Install
+
+```bash
+pip install doorway-agi
+```
+
+Or from source:
 
 ```bash
 pip install -r requirements.txt
@@ -124,4 +132,4 @@ input
 
 ## License
 
-All Rights Reserved. doorwayagi.com
+Apache License 2.0 · © 2026 Doorway
