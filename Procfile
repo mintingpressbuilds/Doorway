@@ -1,1 +1,1 @@
-web: uvicorn doorway.api.server:app --host 0.0.0.0 --port $PORT
+web: PYTHONPATH=. uvicorn doorway.api.server:app --host 0.0.0.0 --port $PORT
