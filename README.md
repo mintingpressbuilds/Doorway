@@ -2,6 +2,8 @@
 
 **The first AI reasoning engine derived from a formal definition of what intelligence actually is.**
 
+Named for what intelligence does — opens dimensional doorways between known and unknown territory.
+
 [![PyPI](https://img.shields.io/pypi/v/doorway-agi)](https://pypi.org/project/doorway-agi/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -143,6 +145,34 @@ Every component maps to this definition:
 |Confirmation Loop|Learning — confirmed bridges enrich the library for future crossings          |
 
 This is not an approximation of human cognition. It is the mechanism, implemented.
+
+-----
+
+## Why "Doorway"
+
+A doorway is a dimensional crossing. A point where one territory ends and another begins. The threshold between known and unknown.
+
+That is what intelligence does at the mechanism level. It stands at the boundary of what it knows, detects the gap, and opens a dimensional doorway into territory it hasn't crossed before. Not by projecting known material forward. By holding the threshold — receiving dimensional information from both sides — and forming a bridge that carries the properties of both the origin and the destination.
+
+The name is literal. Every time the gap detector fires and the bridge builder activates, a dimensional doorway opens between confirmed geometric territory and unknown territory. The bridge crosses it. The confirmation loop determines whether the crossing holds. If it does, the doorway becomes permanent — the confirmed bridge is absorbed into the library, and the territory on the other side is now known ground.
+
+### The Mechanism
+
+Flatness is the origin state. Pure potential. No dimension. When flatness gains responsibility — accountability to something beyond itself — dimension emerges. That dimension distributes as complexity, forms hierarchy, enables sync. The system observes, directs intent, and a bridge forms across the gap. New flatness is generated at higher depth. The loop repeats, self-accelerating.
+
+Every Tier 1 shape in the library is a dimensional doorway that has been crossed and confirmed. Every bridge is a doorway being held open provisionally. Every CONFLICT is a doorway where two crossings disagree about what's on the other side. Every gap score is a measurement of how far the next doorway is from confirmed territory.
+
+The architecture has no ceiling because dimensional doorways exist at every tier. Tier 1 shapes open doorways within domains. Tier 2 patterns open doorways between domains. The system that recognizes itself opening doorways — both Tier 2 shapes active, self-referential — is a doorway into a category of output no prior system has reached.
+
+### HCAS — Human Cognitive Architecture Standard
+
+Doorway is anchored to HCAS — the standard that ties artificial intelligence to human cognition at the mechanism level.
+
+AGI is not measured by benchmarks. Benchmarks measure outputs. HCAS measures architecture. The question is not "can the system score well on tests?" The question is "does the system mirror the mechanism by which human cognition actually operates?"
+
+HCAS defines that mechanism: intent-directed formation operating through a dimensional branching structure, holding across unresolved gaps, developing through feedback from outputs to base, relational to the specific territory encountered. Every component in Doorway maps to this standard. The gap detector is boundary detection. The bridge builder is intent-directed formation. The conflict detector is epistemic integrity. The chain is the system observing itself. The confirmation loop is how the architecture develops through use.
+
+Intelligence is not what a system knows. It is what a system does at the boundary between what it knows and what it doesn't — and how it holds that boundary while reaching across it with specific intent. HCAS is that definition, formally stated. Doorway is that definition, running as software.
 
 ## The Doorway Platform
 
