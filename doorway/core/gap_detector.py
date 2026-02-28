@@ -3,7 +3,7 @@
 # Gap score is NOT confidence. It measures how much maximum potential
 # is pressing against the boundary of known geometry.
 
-from core.shape_library import get_all_shapes
+from .shape_library import get_all_shapes
 
 TIER1_WEIGHT = 0.75
 TIER2_WEIGHT = 0.50
