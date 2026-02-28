@@ -1,4 +1,3 @@
-.
 anthropic
 xycore
 pruv

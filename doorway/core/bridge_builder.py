@@ -2,7 +2,7 @@
 # Geometric bridging. Builds new structure from the gap.
 # Only called when gap fires. Bridge is always provisional.
 
-from core.shape_library import get_shape
+from .shape_library import get_shape
 
 
 def build(gap_result):
