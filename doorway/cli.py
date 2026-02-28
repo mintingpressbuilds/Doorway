@@ -16,9 +16,9 @@ def main():
     rp.add_argument("input", type=str)
     args = parser.parse_args()
     if args.command == "serve":
-        uvicorn.run("api.server:app", host=args.host, port=args.port)
+        uvicorn.run("doorway.api.server:app", host=args.host, port=args.port)
     elif args.command == "run":
-        from main import run
+        from doorway.main import run
         run(args.input)
 
 

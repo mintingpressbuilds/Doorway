@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=68.0,<75.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,10 @@ version = "0.1.0"
 description = "The first AI reasoning engine derived from human cognition. Gap detection. Geometric bridging. Verifiable reasoning."
 authors = [{name = "Luke H"}]
 maintainers = [{name = "Doorway"}]
-license = "Apache-2.0"
+license = {text = "Apache-2.0"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+]
 requires-python = ">=3.11"
 dependencies = [
     "anthropic",
@@ -19,6 +22,12 @@ dependencies = [
     "uvicorn",
 ]
 
+[project.scripts]
+doorway = "doorway.cli:main"
+
 [project.urls]
 Homepage = "https://doorwayagi.com"
 Repository = "https://github.com/doorwayagi/doorway"
+
+[tool.setuptools.packages.find]
+include = ["doorway*"]

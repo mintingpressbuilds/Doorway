@@ -3,8 +3,8 @@
 
 import pytest
 from unittest.mock import patch
-from core import content_layer
-from main import run
+from doorway.core import content_layer
+from doorway.main import run
 
 
 def run_patched(input_text, confidence, implication, success=True):
