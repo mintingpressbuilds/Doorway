@@ -1,8 +1,76 @@
 # Doorway
 
-Created by Luke H · [doorwayagi.com](https://doorwayagi.com)
+**The first AI reasoning engine derived from a formal definition of what intelligence actually is.**
 
-The first AI reasoning engine derived from human cognition. Geometric bridging. Honest gap detection. Verifiable reasoning chains. Every output receipted.
+[![PyPI](https://img.shields.io/pypi/v/doorway-agi)](https://pypi.org/project/doorway-agi/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
+-----
+
+## The Problem
+
+Every AI system today works the same way. Take a language model. Feed it input. Get an answer with a confidence score. Hope it's right.
+
+No system tells you *why* it's confident. No system distinguishes between something genuinely confirmed and something it's assuming. No system catches when its confident answer contradicts the structural geometry of the domain. No system knows what it doesn't know — precisely, geometrically, provably.
+
+When an LLM says "confidence: 0.92" — what does that mean? It means the model's internal weights produced a high probability. It doesn't mean the answer is grounded. It doesn't mean the assumptions are named. It doesn't mean the reasoning can be independently verified.
+
+The entire field is building faster, bigger, more expensive versions of the same architecture. One-directional inference. Known material projected forward. The unknown territory doesn't participate. No epistemic classification. No structural verification. No honest uncertainty.
+
+## What Doorway Does Differently
+
+Doorway runs two layers in parallel. A **content layer** (a full LLM) produces answers. A **structural layer** (geometric pattern matching against a shape library) produces an independent epistemic assessment. Neither layer is the product. The interaction between them is.
+
+Every output is classified into one of four statuses:
+
+|Status         |Meaning                                                                                                                                                                   |
+|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|**GROUND**     |Confirmed territory. The content and structure agree. The answer is on known geometric ground.                                                                            |
+|**BRIDGE**     |Provisional crossing. The structural layer found a geometric pattern, but the bridge has named assumptions. The answer might be right — here's exactly what it depends on.|
+|**CONFLICT**   |Directional disagreement. The content layer says one thing. The structural geometry says another. Both views surfaced. Something the field treats as settled may not be.  |
+|**PROVISIONAL**|Genuinely unknown territory. The gap detector fired but no geometric bridge could be built. The system is honest about not knowing rather than guessing confidently.      |
+
+A user reading BRIDGE with two named assumptions is in a fundamentally different epistemic position than a user reading an answer with "confidence: 0.82."
+
+## How It Works
+
+```
+Input
+  │
+  ├──► Content Layer (LLM)
+  │     └── answer, confidence, implication
+  │
+  ├──► Structural Layer
+  │     ├── Gap Detector ──► measures geometric distance from known shapes
+  │     ├── Shape Library ──► 50 cross-domain geometric patterns
+  │     └── Bridge Builder ──► constructs provisional crossing with named assumptions
+  │
+  ├──► Conflict Detector ──► checks content vs structure for directional disagreement
+  │
+  └──► Chain (xycore) ──► cryptographically receipts every reasoning step
+         │
+         ▼
+  Output: { status, content, structure, bridge, conflict, chain, receipt }
+```
+
+### The Gap Detector
+
+Not a confidence metric. A geometric distance measurement. The gap detector compares the input against the shape library and measures how far the input sits from confirmed geometric territory. When the gap exceeds the fire threshold, the bridge builder activates.
+
+The gap detector receives dimensional information from *both sides* of the gap. The known side provides the closest geometric shape. The unknown side presses back against the boundary with its own dimensional properties. This is bidirectional bridging — the unknown territory participates in the bridge construction. No other system does this.
+
+### The Shape Library
+
+50 cross-domain geometric patterns. Each shape has: structure, elements, constraints, implication type, geometric prediction, and analogs across biology, economics, physics, and other domains. A shape that works in biology and economics isn't a metaphor — it's a geometric correspondence. The same structural pattern producing the same implications in domains that share no vocabulary.
+
+The library grows through confirmed use. Each confirmed bridge enriches the library. The system gets meaningfully more capable with every domain it crosses. This is not fine-tuning. This is structural accumulation.
+
+### Verifiable Reasoning
+
+Every reasoning step is chained via xycore — a cryptographic primitive that produces tamper-evident, independently verifiable receipts. The chain doesn't reconstruct reasoning after the fact. It records every step as it happens. Anyone can verify any output without an account.
+
+This is not logging. Logs can be edited. Chains can't.
 
 ## Install
 
@@ -10,126 +78,95 @@ The first AI reasoning engine derived from human cognition. Geometric bridging. 
 pip install doorway-agi
 ```
 
-Or from source:
+## Quick Start
+
+### CLI
 
 ```bash
-pip install -r requirements.txt
+doorway run "What happens to trust when transparency increases?"
 ```
 
-Create a `.env` file (optional — runs locally without any keys):
+### Python
 
+```python
+from doorway import run
+
+result = run("What happens to trust when transparency increases?")
+
+print(result["status"])          # GROUND | BRIDGE | CONFLICT | PROVISIONAL
+print(result["content"])         # LLM answer + confidence
+print(result["structure"])       # gap score + closest shape
+print(result["bridge"])          # bridge text + named assumptions (if BRIDGE)
+print(result["conflict"])        # both views surfaced (if CONFLICT)
+print(result["chain"])           # cryptographic chain ID + verification
 ```
-ANTHROPIC_API_KEY=your_key_here
-PRUV_API_KEY=pv_live_your_key_here
-```
 
-`ANTHROPIC_API_KEY` enables the content layer (Claude). Without it, the engine runs structure-only.
-`PRUV_API_KEY` enables cloud chain sync. Without it, chains are verified locally.
-
-## Run — CLI
-
-Single input:
+### API Server
 
 ```bash
-python cli.py run "How does compound interest work?"
+doorway serve --port 8000
 ```
-
-## Run — API Server
-
-Start the server:
-
-```bash
-python cli.py serve
-```
-
-Default: `http://0.0.0.0:8000`. Override with `--host` and `--port`.
-
-### POST /run
 
 ```bash
 curl -X POST http://localhost:8000/run \
   -H "Content-Type: application/json" \
-  -d '{"input": "How does compound interest work?"}'
-```
-
-Request body:
-
-```json
-{"input": "your question", "session_name": "doorway_agi"}
-```
-
-Response:
-
-```json
-{
-  "status": "GROUND | BRIDGE | CONFLICT | PROVISIONAL",
-  "content": {"answer": "...", "confidence": 0.85, "implication": "increases", "success": true},
-  "structure": {"closest_shape": "growth_system", "gap_score": 0.12, "fires": false, "...": "..."},
-  "bridge": null,
-  "conflict": {"conflict": false, "...": "..."},
-  "chain": {"id": "abc123", "root": "xy_...", "length": 1, "verified": true},
-  "receipt": {"chain_id": "abc123", "chain_root": "xy_...", "chain_length": 1, "chain_verified": true, "receipt": "..."}
-}
-```
-
-### GET /health
-
-```bash
-curl http://localhost:8000/health
-```
-
-Returns `{"status": "ok", "engine": "doorway_agi"}`.
-
-## Run — Python
-
-```python
-from main import run
-
-result = run("How does compound interest work?")
-# result["status"]  → "GROUND" | "BRIDGE" | "CONFLICT" | "PROVISIONAL"
-# result["chain"]   → {"id", "root", "length", "verified"}
-```
-
-## Status Meanings
-
-| Status | Meaning |
-|---|---|
-| GROUND | Known territory. Gap quiet or content leads with high confidence. |
-| BRIDGE | Adjacent territory. Gap fires, geometric bridge built. Held as provisional. |
-| CONFLICT | Content and structure disagree directionally. Neither treated as ground. |
-| PROVISIONAL | Insufficient information. Content failed or confidence too low. |
-
-## Test
-
-```bash
-python -m pytest tests/ -v
-python examples/run_tests.py
+  -d '{"input": "What happens to trust when transparency increases?"}'
 ```
 
 ## Configuration
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | None | Content layer (Claude API) |
-| `PRUV_API_KEY` | None | Cloud chain sync |
-| `DOORWAY_MODEL` | `claude-sonnet-4-20250514` | Content layer model |
+```bash
+# Required for content layer
+ANTHROPIC_API_KEY=sk-ant-xxx
+
+# Optional — enables cloud chain sync and receipts
+PRUV_API_KEY=pv_live_xxx
+```
+
+Without `ANTHROPIC_API_KEY`, the structural layer still runs — gap detection, shape matching, and bridge construction all work. The content layer returns placeholder responses. Set the key to enable full reasoning.
+
+Without `PRUV_API_KEY`, chains are local only. Set the key to sync chains to the cloud and generate shareable receipts.
 
 ## Architecture
 
-```
-input
-  ├── content_layer.run()      → answer + confidence + implication
-  ├── gap_detector.run()       → closest shape + gap score + fires
-  ├── bridge_builder.build()   → geometric bridge (if gap fires)
-  └── conflict_detector.check() → directional agreement check
-          │
-          ▼
-    status determination → GROUND | BRIDGE | CONFLICT | PROVISIONAL
-          │
-          ▼
-    xy_wrap chain → {id, root, length, verified} + receipt
-```
+Doorway is derived from a specific, stated definition of what intelligence is at the mechanism level. Intelligence is not what a system knows. It is what a system does at the boundary between what it knows and what it doesn't — and how it holds that boundary while reaching across it with specific intent.
+
+Every component maps to this definition:
+
+|Component        |What It Mirrors                                                               |
+|-----------------|------------------------------------------------------------------------------|
+|Shape Library    |Accumulated confirmed ground — what the system knows geometrically            |
+|Gap Detector     |Boundary detection — recognizing the edge of known territory                  |
+|Bridge Builder   |Intent-directed formation — reaching across the gap with provisional structure|
+|Conflict Detector|Epistemic integrity — catching when content and structure disagree            |
+|Chain            |Self-awareness — the reasoning process observing and receipting itself        |
+|Confirmation Loop|Learning — confirmed bridges enrich the library for future crossings          |
+
+This is not an approximation of human cognition. It is the mechanism, implemented.
+
+## The Doorway Platform
+
+Doorway is open source. The platform at [doorwayagi.com](https://doorwayagi.com) provides a consumer interface: conversational reasoning chat with all four statuses rendered, VantagePoint structured thinking environment, and public receipt verification.
+
+|Layer                                                 |What It Is                                                    |
+|------------------------------------------------------|--------------------------------------------------------------|
+|[doorway-agi](https://pypi.org/project/doorway-agi/)  |This package. AGI reasoning engine. Open source.              |
+|[vantagepoint](https://pypi.org/project/vantagepoint/)|Structured thinking methodology. Open source.                 |
+|doorway-asi                                           |Persistence + wisdom emergence. Private. Commercial extension.|
+|doorway-platform                                      |Consumer product at doorwayagi.com. Private.                  |
+
+The architecture is open. The advantage built on top is not.
+
+## Related Packages
+
+- [xycore](https://pypi.org/project/xycore/) — Cryptographic chain primitive
+- [pruv](https://pypi.org/project/pruv/) — Digital verification infrastructure
+- [vantagepoint](https://pypi.org/project/vantagepoint/) — Structured thinking methodology
 
 ## License
 
-Apache License 2.0 · © 2026 Doorway
+Apache License 2.0 — see <LICENSE> for details.
+
+© 2026 Doorway · [doorwayagi.com](https://doorwayagi.com)
+
+Created by Luke H
