@@ -4,7 +4,7 @@
 import os
 from dotenv import load_dotenv
 from pruv import xy_wrap
-from core import gap_detector, bridge_builder, content_layer, conflict_detector, chain as chain_module
+from .core import gap_detector, bridge_builder, content_layer, conflict_detector, chain as chain_module
 load_dotenv()
 
 _raw_key = os.getenv("PRUV_API_KEY")
