@@ -50,6 +50,7 @@ def run(input_text, history=None):
                 "implication": extract_implication("", input_text), "success": False}
     messages = []
     if history:
+        print(f"History received: {len(history)} turns")
         messages.extend(history)
     messages.append({"role": "user", "content":
                      f"Answer this directly and confidently in 2-3 sentences. "
