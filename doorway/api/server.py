@@ -1,6 +1,7 @@
 # api/server.py — Phase 9: API Server (Component 7)
 # Exposes the engine over HTTP. Both vantagepoint and doorway-platform consume this.
 
+import json
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
@@ -25,6 +26,7 @@ class ReasoningRequest(BaseModel):
 
 @app.post("/run")
 async def reasoning(req: ReasoningRequest):
+    print(f"REQUEST BODY: {json.dumps(req.model_dump())}")
     if not req.input.strip():
         raise HTTPException(status_code=400, detail="Input required")
     history = [m.model_dump() for m in req.history] if req.history else None
