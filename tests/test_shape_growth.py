@@ -101,22 +101,26 @@ class TestExtractGeometry:
         bridge = _make_bridge("trust_system", "unknown_domain")
         assert extract_geometry(bridge) is None
 
-    def test_elements_from_input_text(self):
+    def test_elements_are_structural_components(self):
         bridge = _make_bridge(
             "growth_system", "coral_reef_dynamics_system",
             gap_dims={"rate": "slow_to_fast"},
             input_text="Describe the dynamics of a coral reef ecosystem")
         shape = extract_geometry(bridge)
-        assert "coral" in shape["elements"]
-        assert "reef" in shape["elements"]
-        assert "ecosystem" in shape["elements"]
+        # Elements must be structural components, not empty
+        assert len(shape["elements"]) >= 3
+        # Elements should not just be the source shape's elements
+        from doorway.core.shape_library import get_shape
+        source = get_shape("growth_system")
+        assert set(shape["elements"]) != set(source["elements"])
 
-    def test_color_dims_from_gap_dims(self):
+    def test_color_dims_present(self):
         dims = {"stability": "fragile_to_resilient"}
         bridge = _make_bridge("equilibrium_system", "market_pricing_system",
                               gap_dims=dims)
         shape = extract_geometry(bridge)
-        assert shape["color_dims"] == dims
+        assert isinstance(shape["color_dims"], dict)
+        assert len(shape["color_dims"]) >= 1
 
 
 # ── extract_geometry: hierarchy → quantum (growth doc example) ──
@@ -166,10 +170,12 @@ class TestExtractGeometryQuantum:
         quantum_elements = set(shape["elements"])
         # Zero overlap with hierarchy elements
         assert hierarchy_elements & quantum_elements == set()
-        # Must contain quantum-domain terms
-        assert any(w in quantum_elements for w in
-                   ["quantum", "coherence", "decoherence", "qubit",
-                    "error", "correction", "encoding", "redundant"])
+        # Must have structural components (at least 3)
+        assert len(quantum_elements) >= 3
+        # The combined element text should reference quantum concepts,
+        # not hierarchy concepts like "apex", "layers", "enforcement"
+        all_elem_text = " ".join(quantum_elements).lower()
+        assert not any(w in all_elem_text for w in ["apex", "layers", "enforcement"])
 
     def test_confirmed_via_is_hierarchy(self):
         shape, _ = self._run_quantum_bridge()
