@@ -88,22 +88,28 @@ class TestExtractGeometry:
 
     def test_implication_type_not_copied_from_source(self):
         """B's implication_type must be derived from B, not from source."""
-        bridge = _make_bridge("hierarchy_system", "quantum_error_correction_system",
-                              gap_dims={"threshold_proximity": "near_to_far",
-                                        "capacity": "low_to_critical"})
+        bridge = _make_bridge(
+            "hierarchy_system", "quantum_error_correction_system",
+            gap_dims={"rigidity": "flexible_to_rigid"},
+            input_text="How does quantum error correction maintain coherence against decoherence?")
         shape = extract_geometry(bridge)
-        # hierarchy_system is "conditional" but gap_dims have threshold signals
+        # hierarchy_system is "conditional" but input has threshold signals
+        # (coherence, decoherence)
         assert shape["implication_type"] == "threshold"
 
     def test_returns_none_for_unknown_domain(self):
         bridge = _make_bridge("trust_system", "unknown_domain")
         assert extract_geometry(bridge) is None
 
-    def test_elements_from_domain(self):
-        bridge = _make_bridge("growth_system", "coral_reef_dynamics_system",
-                              gap_dims={"rate": "slow_to_fast"})
+    def test_elements_from_input_text(self):
+        bridge = _make_bridge(
+            "growth_system", "coral_reef_dynamics_system",
+            gap_dims={"rate": "slow_to_fast"},
+            input_text="Describe the dynamics of a coral reef ecosystem")
         shape = extract_geometry(bridge)
         assert "coral" in shape["elements"]
+        assert "reef" in shape["elements"]
+        assert "ecosystem" in shape["elements"]
 
     def test_color_dims_from_gap_dims(self):
         dims = {"stability": "fragile_to_resilient"}
@@ -111,6 +117,68 @@ class TestExtractGeometry:
                               gap_dims=dims)
         shape = extract_geometry(bridge)
         assert shape["color_dims"] == dims
+
+
+# ── extract_geometry: hierarchy → quantum (growth doc example) ──
+
+class TestExtractGeometryQuantum:
+    """
+    Verify the growth doc example: hierarchy_system bridges to quantum
+    error correction. What enters the library must describe quantum
+    computing geometry, NOT hierarchy geometry.
+    """
+
+    def _run_quantum_bridge(self):
+        from doorway.core.shape_library import get_shape
+        h = get_shape("hierarchy_system")
+        gap_result = gap_detector.run(
+            "How does quantum error correction maintain coherence "
+            "against decoherence using redundant qubit encoding?")
+        gap_result = dict(gap_result)
+        gap_result["closest_shape"] = "hierarchy_system"
+        gap_result["geometric_prediction"] = h["geometric_prediction"]
+        gap_result["implication_type"] = h["implication_type"]
+        bridge = bridge_builder.build(
+            gap_result,
+            input_text="How does quantum error correction maintain coherence "
+                       "against decoherence using redundant qubit encoding?")
+        return extract_geometry(bridge), h
+
+    def test_structure_describes_quantum_not_hierarchy(self):
+        shape, h = self._run_quantum_bridge()
+        # Must NOT contain hierarchy_system's structure
+        assert "nested layers of authority" not in shape["structure"]
+        assert "dependency flowing downward" not in shape["structure"]
+        # Must contain quantum-related terms
+        structure_lower = shape["structure"].lower()
+        assert "quantum" in structure_lower
+
+    def test_implication_type_is_threshold_not_conditional(self):
+        shape, h = self._run_quantum_bridge()
+        # hierarchy_system is "conditional"
+        assert h["implication_type"] == "conditional"
+        # B should be "threshold" (coherence/decoherence signals)
+        assert shape["implication_type"] == "threshold"
+
+    def test_elements_are_quantum_not_hierarchy(self):
+        shape, h = self._run_quantum_bridge()
+        hierarchy_elements = set(h["elements"])
+        quantum_elements = set(shape["elements"])
+        # Zero overlap with hierarchy elements
+        assert hierarchy_elements & quantum_elements == set()
+        # Must contain quantum-domain terms
+        assert any(w in quantum_elements for w in
+                   ["quantum", "coherence", "decoherence", "qubit",
+                    "error", "correction", "encoding", "redundant"])
+
+    def test_confirmed_via_is_hierarchy(self):
+        shape, _ = self._run_quantum_bridge()
+        assert shape["confirmed_via"] == "hierarchy_system"
+
+    def test_name_reflects_target_domain(self):
+        shape, _ = self._run_quantum_bridge()
+        assert "quantum" in shape["name"]
+        assert shape["name"].endswith("_system")
 
 
 # ── Confirmation ──
@@ -179,22 +247,27 @@ class TestInferImplicationType:
 
     def test_threshold_signals(self):
         assert _infer_implication_type(
+            "coherence against decoherence below error threshold",
             {"threshold_proximity": "near", "capacity": "critical"},
-            "below error threshold") == "threshold"
+        ) == "threshold"
 
     def test_increase_signals(self):
         assert _infer_implication_type(
-            {"rate": "fast", "growth": "unbounded"},
-            "compounding accumulation") == "increases"
+            "compounding accumulation exponential growth",
+            {"rate": "fast"},
+        ) == "increases"
 
     def test_decrease_signals(self):
         assert _infer_implication_type(
-            {"decay": "exponential", "depletion": "total"},
-            "degradation over time") == "decreases"
+            "radioactive decay and depletion over time",
+            {"half_life": "short"},
+        ) == "decreases"
 
     def test_default_conditional(self):
         assert _infer_implication_type(
-            {"axis": "low_to_high"}, "some relationship") == "conditional"
+            "some relationship between variables",
+            {"axis": "low_to_high"},
+        ) == "conditional"
 
 
 # ── Bridge History ──
@@ -412,7 +485,12 @@ class TestPipelineIntegration:
 
 # ── Helpers ──
 
-def _make_bridge(source_shape, target_domain, gap_dims=None, gap_score=0.5):
+def _make_bridge(source_shape, target_domain, gap_dims=None, gap_score=0.5,
+                  input_text=None):
+    if input_text is None:
+        # Default: derive plausible input from the target domain name
+        label = target_domain.replace("_system", "").replace("_", " ")
+        input_text = f"How does {label} work in this domain?"
     return {
         "bridge": f"{source_shape} geometry applies: test bridge description.",
         "assumptions": ["provisional"],
@@ -424,6 +502,7 @@ def _make_bridge(source_shape, target_domain, gap_dims=None, gap_score=0.5):
         "target_domain": target_domain,
         "gap_dims": gap_dims or {},
         "gap_score": gap_score,
+        "input_text": input_text,
     }
 
 

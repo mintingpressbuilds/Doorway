@@ -63,4 +63,5 @@ def build(gap_result, input_text=None):
         "target_domain": target_domain,
         "gap_dims": gap_dims,
         "gap_score": gap_result["gap_score"],
+        "input_text": input_text or "",
     }

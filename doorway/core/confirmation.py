@@ -6,13 +6,37 @@
 
 from .gap_detector import score_shape
 
-# Dimensional axes that suggest specific implication types
-_THRESHOLD_SIGNALS = ["threshold", "critical", "rupture", "breaking", "saturation",
-                      "limit", "capacity", "tipping"]
-_INCREASE_SIGNALS = ["rate", "gain", "growth", "amplification", "accumulation",
-                     "compounding", "scaling"]
-_DECREASE_SIGNALS = ["decay", "depletion", "erosion", "degradation", "loss",
-                     "dissipation", "attrition"]
+# ── Signals scanned in input_text to determine B's implication_type ──
+# These are properties of B's domain, not of the source shape.
+_THRESHOLD_SIGNALS = [
+    "threshold", "critical", "tipping", "phase transition", "rupture",
+    "breaking point", "saturation", "boiling", "melting", "capacity",
+    "limit", "cliff", "snap", "collapse", "decoherence", "coherence",
+    "error threshold", "tolerance", "fault tolerance",
+]
+_INCREASE_SIGNALS = [
+    "compound", "exponential", "growth", "accumulate", "amplif",
+    "accelerat", "scaling", "multiply", "spread", "viral",
+    "compound interest", "snowball", "reinvest",
+]
+_DECREASE_SIGNALS = [
+    "decay", "deplet", "erosion", "degradat", "attrition", "dissipat",
+    "entropy", "decline", "fade", "wither", "half-life", "depreciat",
+]
+
+# Words that carry structural meaning in the input — kept as B's elements
+_STRUCTURAL_WORDS = frozenset([
+    "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+    "have", "has", "had", "do", "does", "did", "will", "would", "could",
+    "should", "may", "might", "shall", "can", "need", "to", "of", "in",
+    "for", "on", "with", "at", "by", "from", "as", "into", "through",
+    "during", "before", "after", "between", "out", "off", "over", "under",
+    "again", "then", "here", "there", "when", "where", "why", "how",
+    "all", "both", "each", "some", "no", "not", "very", "just", "now",
+    "and", "but", "or", "if", "that", "this", "what", "which", "who",
+    "its", "it", "about", "work", "works", "make", "makes", "does",
+    "describe", "many", "much", "more", "most",
+])
 
 # Minimum gap_score for a bridge to be confirmable
 CONFIRM_GAP_THRESHOLD = 0.35
@@ -21,57 +45,59 @@ CONFIRM_GAP_THRESHOLD = 0.35
 DEDUP_OVERLAP_THRESHOLD = 0.70
 
 
+def _extract_domain_words(input_text):
+    """Pull meaningful words from input — these describe B's domain."""
+    words = [w.strip("?.,!\"'()") for w in input_text.lower().split()]
+    return [w for w in words if w.isalpha() and len(w) > 2
+            and w not in _STRUCTURAL_WORDS]
+
+
 def extract_geometry(bridge):
     """
     Extract the geometry of the unknown domain B from a bridge result.
 
-    Uses bridge["target_domain"] and bridge["gap_dims"] to produce a
-    genuinely new geometric pattern. The new shape describes what B
-    actually IS — not what the source shape is.
+    Uses bridge["target_domain"], bridge["gap_dims"], and
+    bridge["input_text"] to produce a genuinely new geometric pattern.
+    The new shape describes what B actually IS — not what the source
+    shape is.
 
     Returns a shape definition dict, or None if extraction fails.
     """
     target_domain = bridge.get("target_domain", "unknown_domain")
     gap_dims = bridge.get("gap_dims", {})
     source_shape = bridge.get("shape_name", "unknown")
-    bridge_text = bridge.get("bridge", "")
+    input_text = bridge.get("input_text", "")
     gap_score = bridge.get("gap_score", 0)
 
     if target_domain == "unknown_domain":
         return None
 
-    # Derive B's implication_type from gap_dims analysis — NOT from source
-    impl_type = _infer_implication_type(gap_dims, bridge_text)
-
-    # Derive B's structure from the bridge (reoriented toward B)
+    # ── B's words — extracted from what the user actually asked about ──
+    domain_words = _extract_domain_words(input_text)
     domain_label = target_domain.replace("_system", "").replace("_", " ")
-    structure = (
-        f"{domain_label} exhibits geometric pattern where "
-        f"{bridge.get('geometric_prediction', 'structural relationship holds')}"
-    )
 
-    # Extract B's elements from the target domain name
-    domain_words = [w for w in target_domain.replace("_system", "").split("_") if w]
-    elements = domain_words[:5]
-    # Pad with structural elements derived from gap_dims axes
-    for axis in gap_dims:
-        if len(elements) < 5 and axis not in elements:
-            elements.append(axis)
+    # ── Implication type — inferred from B's domain text, NOT from source ──
+    impl_type = _infer_implication_type(input_text, gap_dims)
 
-    # Keywords come from B's domain, not from the source shape
-    keywords_tier1 = domain_words[:4]
-    if len(keywords_tier1) < 4:
-        keywords_tier1.extend(list(gap_dims.keys())[:4 - len(keywords_tier1)])
-    keywords_tier2 = list(gap_dims.keys()) + [domain_label]
+    # ── Structure — describes B's geometric pattern from the destination side ──
+    # The source shape's prediction is deliberately excluded.
+    structure = _derive_structure(domain_label, domain_words, impl_type, gap_dims)
 
-    # Color dims come from the gap_dims analysis
+    # ── Elements — structural components of B ──
+    elements = _derive_elements(domain_words, gap_dims)
+
+    # ── Keywords — from B's domain, not from source shape ──
+    keywords_tier1 = domain_words[:5]
+    # tier2: additional context words + gap_dims axis names
+    keywords_tier2 = domain_words[5:13] + list(gap_dims.keys())
+
+    # ── Color dims — axes relevant to B's domain ──
+    # Start from gap_dims (the bridge's dimensional texture),
+    # then reinterpret axes toward B where possible.
     color_dims = dict(gap_dims) if gap_dims else {}
 
-    # Geometric prediction oriented toward B
-    geometric_prediction = (
-        f"{domain_label} follows {impl_type} pattern — "
-        f"{bridge.get('geometric_prediction', 'structural relationship holds')}"
-    )
+    # ── Geometric prediction — what B's geometry predicts ──
+    geometric_prediction = _derive_prediction(domain_label, impl_type, elements)
 
     return {
         "name": target_domain,
@@ -88,13 +114,16 @@ def extract_geometry(bridge):
     }
 
 
-def _infer_implication_type(gap_dims, bridge_text):
+def _infer_implication_type(input_text, gap_dims):
     """
-    Determine B's implication type from dimensional analysis.
-    This is B's own geometry — not copied from the source shape.
+    Determine B's implication type from the input text and dimensional
+    texture. Scans for domain-specific signals. This is B's own
+    geometry — not copied from the source shape.
     """
-    combined = " ".join(list(gap_dims.keys()) + list(gap_dims.values())).lower()
-    combined += " " + bridge_text.lower()
+    text = input_text.lower()
+    # Also consider gap_dims axis names as secondary signal
+    dim_text = " ".join(list(gap_dims.keys()) + list(gap_dims.values())).lower()
+    combined = text + " " + dim_text
 
     threshold_score = sum(1 for s in _THRESHOLD_SIGNALS if s in combined)
     increase_score = sum(1 for s in _INCREASE_SIGNALS if s in combined)
@@ -102,11 +131,94 @@ def _infer_implication_type(gap_dims, bridge_text):
 
     if threshold_score >= 2:
         return "threshold"
-    if increase_score > decrease_score and increase_score >= 2:
+    if threshold_score == 1 and increase_score == 0 and decrease_score == 0:
+        return "threshold"
+    if increase_score > decrease_score and increase_score >= 1:
         return "increases"
-    if decrease_score > increase_score and decrease_score >= 2:
+    if decrease_score > increase_score and decrease_score >= 1:
         return "decreases"
     return "conditional"
+
+
+def _derive_structure(domain_label, domain_words, impl_type, gap_dims):
+    """
+    Build a structure description for B from B's domain words and
+    inferred implication type. Does NOT reference the source shape.
+    """
+    # Describe the core structural relationship
+    core_words = domain_words[:6]
+    if not core_words:
+        return f"{domain_label} exhibits {impl_type} geometric pattern"
+
+    noun_phrase = " ".join(core_words[:3])
+    verb_phrase = " ".join(core_words[3:6]) if len(core_words) > 3 else ""
+
+    parts = [f"{noun_phrase}"]
+    if verb_phrase:
+        parts.append(verb_phrase)
+
+    dim_description = ""
+    if gap_dims:
+        axes = list(gap_dims.items())[:2]
+        dim_parts = [f"{k.replace('_', ' ')} varying from {v.replace('_', ' ')}"
+                     for k, v in axes]
+        dim_description = " with " + " and ".join(dim_parts)
+
+    structure = (
+        f"{' '.join(parts)} — "
+        f"{impl_type} pattern where {domain_label} "
+        f"geometry operates{dim_description}"
+    )
+    return structure
+
+
+def _derive_elements(domain_words, gap_dims):
+    """
+    Extract B's structural elements from domain words and gap_dims.
+    Elements are the building blocks of B's geometry.
+    """
+    elements = []
+    # Primary elements from B's domain
+    for w in domain_words:
+        if len(elements) >= 5:
+            break
+        if w not in elements:
+            elements.append(w)
+    # Fill remaining from dimensional axes
+    for axis in gap_dims:
+        if len(elements) >= 5:
+            break
+        if axis not in elements:
+            elements.append(axis)
+    return elements if elements else ["structure", "pattern", "relationship"]
+
+
+def _derive_prediction(domain_label, impl_type, elements):
+    """
+    Generate geometric prediction for B based on its inferred type
+    and structural elements.
+    """
+    elem_str = ", ".join(elements[:3]) if elements else domain_label
+
+    predictions = {
+        "threshold": (
+            f"{domain_label} maintains stability until critical threshold — "
+            f"{elem_str} collapse or transform beyond that point"
+        ),
+        "increases": (
+            f"{elem_str} compound over time producing non-linear growth "
+            f"in {domain_label}"
+        ),
+        "decreases": (
+            f"{elem_str} degrade over time following predictable decay "
+            f"in {domain_label}"
+        ),
+        "conditional": (
+            f"{domain_label} behavior depends on interaction between "
+            f"{elem_str} — outcome conditional on configuration"
+        ),
+    }
+    return predictions.get(impl_type, predictions["conditional"])
 
 
 def _is_duplicate(new_shape, shared_library):
