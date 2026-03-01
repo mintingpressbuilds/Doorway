@@ -3,6 +3,7 @@
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List, Optional
 from pydantic import BaseModel
 from ..main import run
 
@@ -11,16 +12,23 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"],
                    allow_methods=["POST", "GET"], allow_headers=["*"])
 
 
+class HistoryMessage(BaseModel):
+    role: str
+    content: str
+
+
 class ReasoningRequest(BaseModel):
     input: str
     session_name: str = "doorway_agi"
+    history: Optional[List[HistoryMessage]] = None
 
 
 @app.post("/run")
 async def reasoning(req: ReasoningRequest):
     if not req.input.strip():
         raise HTTPException(status_code=400, detail="Input required")
-    return run(req.input, verbose=False)
+    history = [m.model_dump() for m in req.history] if req.history else None
+    return run(req.input, verbose=False, history=history)
 
 
 @app.get("/health")
