@@ -20,8 +20,11 @@ def score_shape(input_text, shape):
     return round(min(combined, 1.0), 3)
 
 
-def run(input_text):
-    library = get_all_shapes()
+def run(input_text, shape_library=None):
+    if shape_library is None:
+        library = get_all_shapes()
+    else:
+        library = shape_library
     scores = {name: score_shape(input_text, shape) for name, shape in library.items()}
     sorted_shapes = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     best_name, best_score = sorted_shapes[0]
