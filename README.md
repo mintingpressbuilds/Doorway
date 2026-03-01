@@ -4,7 +4,7 @@
 
 Named for what intelligence does — opens dimensional doorways between known and unknown territory.
 
-[![PyPI](https://img.shields.io/pypi/v/doorway-agi)](https://pypi.org/project/doorway-agi/)
+[![Version](https://img.shields.io/badge/version-0.2.0-orange)](https://github.com/mintingpressbuilds/Doorway)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
