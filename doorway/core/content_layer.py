@@ -4,6 +4,7 @@
 
 import os
 import json
+import urllib.error
 import urllib.request
 from dotenv import load_dotenv
 
@@ -77,6 +78,18 @@ def run(input_text):
                 "implication": extract_implication(answer, input_text),
                 "success": True,
             }
+    except urllib.error.HTTPError as e:
+        body = ""
+        try:
+            body = e.read().decode("utf-8", errors="replace")[:300]
+        except Exception:
+            pass
+        return {
+            "answer": f"[Content layer error: {e.code} {e.reason} — {body}]",
+            "confidence": 0.0,
+            "implication": extract_implication("", input_text),
+            "success": False,
+        }
     except Exception as e:
         return {
             "answer": f"[Content layer error: {str(e)[:120]}]",
