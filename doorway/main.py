@@ -14,8 +14,8 @@ PRUV_API_KEY = _raw_key if _raw_key and _raw_key != "pv_live_your_key_here" else
     chain_name="doorway_agi", auto_redact=True,
     **({"api_key": PRUV_API_KEY} if PRUV_API_KEY else {})
 )
-def _reasoning_core(input_text):
-    content = content_layer.run(input_text)
+def _reasoning_core(input_text, history=None):
+    content = content_layer.run(input_text, history=history)
     structure = gap_detector.run(input_text)
     bridge = bridge_builder.build(structure) if structure["fires"] else None
     conflict = conflict_detector.check(content, structure, bridge)
@@ -37,8 +37,8 @@ def _reasoning_core(input_text):
             "bridge": bridge, "conflict": conflict}
 
 
-def run(input_text, verbose=True):
-    wrapped = _reasoning_core(input_text)
+def run(input_text, verbose=True, history=None):
+    wrapped = _reasoning_core(input_text, history=history)
     result = wrapped.output
     receipt = chain_module.extract_receipt_info(wrapped)
     if verbose:

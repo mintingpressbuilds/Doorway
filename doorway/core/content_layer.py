@@ -44,16 +44,20 @@ def extract_implication(answer_text, input_text=None):
         return "conditional"
 
 
-def run(input_text):
+def run(input_text, history=None):
     if not API_KEY:
         return {"answer": "[No API key]", "confidence": 0.0,
                 "implication": extract_implication("", input_text), "success": False}
+    messages = []
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content":
+                     f"Answer this directly and confidently in 2-3 sentences. "
+                     f"Do not over-qualify unless genuinely uncertain.\n\n{input_text}"})
     payload = json.dumps({
         "model": MODEL,
         "max_tokens": 300,
-        "messages": [{"role": "user", "content":
-                      f"Answer this directly and confidently in 2-3 sentences. "
-                      f"Do not over-qualify unless genuinely uncertain.\n\n{input_text}"}]
+        "messages": messages,
     }).encode()
     req = urllib.request.Request(
         "https://api.anthropic.com/v1/messages",
