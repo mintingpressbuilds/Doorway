@@ -187,6 +187,20 @@ Doorway is open source. The platform at [doorwayagi.com](https://doorwayagi.com)
 
 The architecture is open. The advantage built on top is not.
 
+### Library Growth
+
+The shape library is not static. It grows through confirmed use.
+
+When a bridge is confirmed, the geometry of the unknown domain is
+extracted — not as a copy of the source shape, but as a genuinely
+new geometric pattern with its own structure, elements, and
+predictions. The new shape enters the shared library permanently.
+
+The next session — by any user — matches against a richer library.
+Gap scores shrink. Bridges get more precise. The system gets
+smarter from collective use. More users, more confirmations,
+richer library, better reasoning for everyone.
+
 ## Related Packages
 
 - [xycore](https://pypi.org/project/xycore/) — Cryptographic chain primitive
