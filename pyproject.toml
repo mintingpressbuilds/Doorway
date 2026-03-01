@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "doorway-agi"
-version = "0.2.0"
+version = "0.3.0"
 description = "The first AI reasoning engine derived from human cognition. Gap detection. Geometric bridging. Verifiable reasoning."
 readme = "README.md"
 authors = [{name = "Luke H"}]
