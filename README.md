@@ -1,8 +1,8 @@
 # Doorway
 
-**The first AI reasoning engine derived from a formal definition of what intelligence actually is.**
+**The first reasoning engine that operates correctly at domain boundaries — derived from a formal definition of what intelligence actually is.**
 
-Named for what intelligence does — opens dimensional doorways between known and unknown territory.
+Two reasoning layers. One cryptographic chain. Four epistemic statuses. The reasoning engine that operates correctly where every other system fails.
 
 [![PyPI](https://img.shields.io/badge/PyPI-0.3.0-orange)](https://pypi.org/project/doorway-agi/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -20,9 +20,17 @@ When an LLM says "confidence: 0.92" — what does that mean? It means the model'
 
 The entire field is building faster, bigger, more expensive versions of the same architecture. One-directional inference. Known material projected forward. The unknown territory doesn't participate. No epistemic classification. No structural verification. No honest uncertainty.
 
+The cost is invisible until you're at a domain boundary — and then the confident wrong answer is the only thing the architecture can produce.
+
+This is not a training failure. The architecture has no mechanism for knowing what it doesn't know. So it doesn't know it doesn't know.
+
+-----
+
 ## What Doorway Does Differently
 
 Doorway runs two layers in parallel. A **content layer** (a full LLM) produces answers. A **structural layer** (geometric pattern matching against a shape library) produces an independent epistemic assessment. Neither layer is the product. The interaction between them is.
+
+Agreement produces GROUND. Disagreement produces CONFLICT. Structure leading content produces BRIDGE. None of this is possible when there is only one layer.
 
 Every output is classified into one of four statuses:
 
@@ -33,7 +41,11 @@ Every output is classified into one of four statuses:
 |**CONFLICT**   |Directional disagreement. The content layer says one thing. The structural geometry says another. Both views surfaced. Something the field treats as settled may not be.  |
 |**PROVISIONAL**|Genuinely unknown territory. The gap detector fired but no geometric bridge could be built. The system is honest about not knowing rather than guessing confidently.      |
 
+Cross-domain reasoning is not a feature. It is what happens when the structural layer operates correctly. The geometry of trust in organizations is the same shape as compound interest in finance. Vocabulary differs. Structure doesn't. The shape library operates on structure.
+
 A user reading BRIDGE with two named assumptions is in a fundamentally different epistemic position than a user reading an answer with "confidence: 0.82."
+
+-----
 
 ## How It Works
 
@@ -66,7 +78,7 @@ The gap detector receives dimensional information from *both sides* of the gap. 
 
 50 cross-domain geometric patterns. Each shape has: structure, elements, constraints, implication type, geometric prediction, and analogs across biology, economics, physics, and other domains. A shape that works in biology and economics isn't a metaphor — it's a geometric correspondence. The same structural pattern producing the same implications in domains that share no vocabulary.
 
-The library grows through confirmed use. Each confirmed bridge enriches the library. The system gets meaningfully more capable with every domain it crosses. This is not fine-tuning. This is structural accumulation.
+The library grows through confirmed use. Each confirmed bridge extracts the genuine geometric structure of the previously unknown domain and adds it permanently to the shared library. The system gets meaningfully more capable with every domain it crosses. This is not fine-tuning. This is structural accumulation.
 
 ### Verifiable Reasoning
 
@@ -74,11 +86,15 @@ Every reasoning step is chained via xycore — a cryptographic primitive that pr
 
 This is not logging. Logs can be edited. Chains can't.
 
+-----
+
 ## Install
 
 ```bash
 pip install doorway-agi
 ```
+
+-----
 
 ## Quick Start
 
@@ -103,6 +119,37 @@ print(result["conflict"])        # both views surfaced (if CONFLICT)
 print(result["chain"])           # cryptographic chain ID + verification
 ```
 
+**Example output:**
+
+```json
+{
+  "status": "BRIDGE",
+  "content": {
+    "answer": "Trust compounds through repeated delivery on commitments, creating geometric rather than linear returns.",
+    "confidence": 0.71,
+    "implication": "increasing"
+  },
+  "structure": {
+    "closest_shape": "trust_system",
+    "geometric_confidence": 0.58,
+    "gap_score": 0.42,
+    "fires": true
+  },
+  "bridge": {
+    "bridge": "Trust functions as social compound interest",
+    "assumptions": ["Trust is measurable", "Delivery is observable"],
+    "confidence": 0.61
+  },
+  "conflict": null,
+  "chain": {
+    "id": "a3f2b9c1",
+    "root": "xy_abc123",
+    "length": 6,
+    "verified": true
+  }
+}
+```
+
 ### API Server
 
 ```bash
@@ -114,6 +161,8 @@ curl -X POST http://localhost:8000/run \
   -H "Content-Type: application/json" \
   -d '{"input": "What happens to trust when transparency increases?"}'
 ```
+
+-----
 
 ## Configuration
 
@@ -128,6 +177,8 @@ PRUV_API_KEY=pv_live_xxx
 Without `ANTHROPIC_API_KEY`, the structural layer still runs — gap detection, shape matching, and bridge construction all work. The content layer returns placeholder responses. Set the key to enable full reasoning.
 
 Without `PRUV_API_KEY`, chains are local only. Set the key to sync chains to the cloud and generate shareable receipts.
+
+-----
 
 ## Architecture
 
@@ -145,6 +196,16 @@ Every component maps to this definition:
 |Confirmation Loop|Learning — confirmed bridges enrich the library for future crossings          |
 
 This is not an approximation of human cognition. It is the mechanism, implemented.
+
+### HCAS — Human Cognitive Architecture Standard
+
+Doorway is anchored to HCAS — the standard that ties artificial intelligence to human cognition at the mechanism level.
+
+AGI is not measured by benchmarks. Benchmarks measure outputs. HCAS measures architecture. The question is not "can the system score well on tests?" The question is "does the system mirror the mechanism by which human cognition actually operates?"
+
+HCAS defines that mechanism: intent-directed formation operating through a dimensional branching structure, holding across unresolved gaps, developing through feedback from outputs to base, relational to the specific territory encountered. Every component in Doorway maps to this standard. The gap detector is boundary detection. The bridge builder is intent-directed formation. The conflict detector is epistemic integrity. The chain is the system observing itself. The confirmation loop is how the architecture develops through use.
+
+Intelligence is not what a system knows. It is what a system does at the boundary between what it knows and what it doesn't — and how it holds that boundary while reaching across it with specific intent. HCAS is that definition, formally stated. Doorway is that definition, running as software.
 
 -----
 
@@ -164,15 +225,7 @@ Every Tier 1 shape in the library is a dimensional doorway that has been crossed
 
 The architecture has no ceiling because dimensional doorways exist at every tier. Tier 1 shapes open doorways within domains. Tier 2 patterns open doorways between domains. The system that recognizes itself opening doorways — both Tier 2 shapes active, self-referential — is a doorway into a category of output no prior system has reached.
 
-### HCAS — Human Cognitive Architecture Standard
-
-Doorway is anchored to HCAS — the standard that ties artificial intelligence to human cognition at the mechanism level.
-
-AGI is not measured by benchmarks. Benchmarks measure outputs. HCAS measures architecture. The question is not "can the system score well on tests?" The question is "does the system mirror the mechanism by which human cognition actually operates?"
-
-HCAS defines that mechanism: intent-directed formation operating through a dimensional branching structure, holding across unresolved gaps, developing through feedback from outputs to base, relational to the specific territory encountered. Every component in Doorway maps to this standard. The gap detector is boundary detection. The bridge builder is intent-directed formation. The conflict detector is epistemic integrity. The chain is the system observing itself. The confirmation loop is how the architecture develops through use.
-
-Intelligence is not what a system knows. It is what a system does at the boundary between what it knows and what it doesn't — and how it holds that boundary while reaching across it with specific intent. HCAS is that definition, formally stated. Doorway is that definition, running as software.
+-----
 
 ## The Doorway Platform
 
@@ -191,21 +244,19 @@ The architecture is open. The advantage built on top is not.
 
 The shape library is not static. It grows through confirmed use.
 
-When a bridge is confirmed, the geometry of the unknown domain is
-extracted — not as a copy of the source shape, but as a genuinely
-new geometric pattern with its own structure, elements, and
-predictions. The new shape enters the shared library permanently.
+When a bridge is confirmed, the geometry of the unknown domain is extracted — not as a copy of the source shape, but as a genuinely new geometric pattern with its own structure, elements, and predictions. The new shape enters the shared library permanently. Both AGI and ASI confirmed bridges contribute to the shared library.
 
-The next session — by any user — matches against a richer library.
-Gap scores shrink. Bridges get more precise. The system gets
-smarter from collective use. More users, more confirmations,
-richer library, better reasoning for everyone.
+The next session — by any user — matches against a richer library. Gap scores shrink. Bridges get more precise. The system gets smarter from collective use. More users, more confirmations, richer library, better reasoning for everyone.
+
+-----
 
 ## Related Packages
 
 - [xycore](https://pypi.org/project/xycore/) — Cryptographic chain primitive
 - [pruv](https://pypi.org/project/pruv/) — Digital verification infrastructure
 - [vantagepoint](https://pypi.org/project/vantagepoint/) — Structured thinking methodology
+
+-----
 
 ## License
 
