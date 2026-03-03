@@ -9,6 +9,11 @@ TIER1_WEIGHT = 0.75
 TIER2_WEIGHT = 0.50
 FIRE_THRESHOLD = 0.35
 
+# Below this score, the shape match is too weak to be meaningful.
+# The matcher returns the closest shape but marks confidence as 0.0
+# so the status classifier knows no shape is geometrically relevant.
+MINIMUM_SHAPE_CONFIDENCE = 0.10
+
 
 def score_shape(input_text, shape):
     input_lower = input_text.lower()
@@ -29,12 +34,19 @@ def run(input_text, shape_library=None):
     sorted_shapes = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     best_name, best_score = sorted_shapes[0]
     second_name, second_score = sorted_shapes[1] if len(sorted_shapes) > 1 else (None, 0)
-    gap_score = round(1 - best_score, 3)
+
+    # Enforce minimum shape confidence — below this, the match is noise
+    if best_score < MINIMUM_SHAPE_CONFIDENCE:
+        effective_confidence = 0.0
+    else:
+        effective_confidence = best_score
+
+    gap_score = round(1 - effective_confidence, 3)
     fires = gap_score > FIRE_THRESHOLD
     best_shape = library[best_name]
     return {
         "closest_shape": best_name,
-        "geometric_confidence": best_score,
+        "geometric_confidence": effective_confidence,
         "geometric_prediction": best_shape["geometric_prediction"],
         "implication_type": best_shape["implication_type"],
         "second_shape": second_name,

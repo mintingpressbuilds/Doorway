@@ -14,6 +14,61 @@ load_dotenv()
 _raw_key = os.getenv("PRUV_API_KEY")
 PRUV_API_KEY = _raw_key if _raw_key and _raw_key != "pv_live_your_key_here" else None
 
+# ── Status classification thresholds ──
+PROVISIONAL_GAP_THRESHOLD = 0.80    # Gap must be at least this high for PROVISIONAL
+PROVISIONAL_CONF_CEILING = 0.15     # Shape confidence must be below this for PROVISIONAL
+GROUND_GAP_CEILING = 0.30           # Gap must be below this for structure-based GROUND
+GROUND_SHAPE_FLOOR = 0.70           # Shape confidence must be at least this for GROUND
+GROUND_CONTENT_FLOOR = 0.75         # Content confidence floor for quiet-gap GROUND
+CONTENT_LEADS_CONFIDENCE = 0.85     # Content confidence for content-leads GROUND path
+
+
+def _classify_status(gap_score, shape_confidence, conflict_detected,
+                     content_confidence, content_success, fires):
+    """
+    Status classification — applied in priority order:
+
+    1. CONFLICT takes priority if the conflict detector fired
+    2. GROUND via content-leads: content very confident + shape match
+       too weak for a meaningful bridge (the structural layer has
+       nothing to add — content knows this territory)
+    3. PROVISIONAL if gap is high AND shape confidence is below minimum
+    4. GROUND if gap is low AND shape confidence is high (structure-confirmed)
+    5. BRIDGE for everything in between (provisional crossing with assumptions)
+    """
+    # Rule 1: Conflict always wins
+    if conflict_detected:
+        return "CONFLICT"
+
+    # Rule 2: Content-leads GROUND — content very confident, shape match
+    # is too weak to constitute a meaningful structural contribution.
+    # "Water boils at 100°C" → content knows this, structure has nothing
+    # to add. The shape match is noise, not a bridge worth crossing.
+    if (content_confidence >= CONTENT_LEADS_CONFIDENCE and content_success
+            and shape_confidence < GROUND_GAP_CEILING):
+        return "GROUND"
+
+    # Rule 3: PROVISIONAL — genuinely unknown territory
+    # Gap fired hard AND no usable shape match AND content not confident
+    if gap_score >= PROVISIONAL_GAP_THRESHOLD and shape_confidence < PROVISIONAL_CONF_CEILING:
+        return "PROVISIONAL"
+
+    # Rule 4: GROUND — confirmed territory (both layers must contribute)
+    # Path A: low gap + high shape confidence + content didn't fail
+    if (gap_score < GROUND_GAP_CEILING and shape_confidence >= GROUND_SHAPE_FLOOR
+            and content_success):
+        return "GROUND"
+    # Path B: gap quiet (didn't fire) + content confident
+    if not fires and content_confidence > GROUND_CONTENT_FLOOR:
+        return "GROUND"
+
+    # Rule 5: BRIDGE — everything else where gap fired
+    if fires:
+        return "BRIDGE"
+
+    # Fallback: gap didn't fire, content not confident enough for GROUND
+    return "PROVISIONAL"
+
 @xy_wrap(
     chain_name="doorway_agi", auto_redact=True,
     **({"api_key": PRUV_API_KEY} if PRUV_API_KEY else {})
@@ -24,18 +79,16 @@ def _reasoning_core(input_text, history=None, shape_library=None):
     bridge = bridge_builder.build(structure, input_text=input_text) if structure["fires"] else None
     conflict = conflict_detector.check(content, structure, bridge)
 
-    # Status determination with content-leads path
-    if not structure["fires"] and not conflict["conflict"] and content["confidence"] > 0.75:
-        status = "GROUND"
-    elif (structure["gap_score"] > 0.9 and not conflict["conflict"]
-          and content["confidence"] > 0.85 and content["success"]):
-        status = "GROUND"  # Content-leads: no shape relevant, content highly confident
-    elif conflict["conflict"]:
-        status = "CONFLICT"
-    elif structure["fires"]:
-        status = "BRIDGE"
-    else:
-        status = "PROVISIONAL"
+    # Status determination — applied in priority order.
+    # Thresholds are tunable constants defined in gap_detector.
+    status = _classify_status(
+        gap_score=structure["gap_score"],
+        shape_confidence=structure["geometric_confidence"],
+        conflict_detected=conflict["conflict"],
+        content_confidence=content.get("confidence", 0),
+        content_success=content.get("success", False),
+        fires=structure["fires"],
+    )
 
     return {"status": status, "content": content, "structure": structure,
             "bridge": bridge, "conflict": conflict}
