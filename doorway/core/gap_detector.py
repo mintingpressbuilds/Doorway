@@ -14,6 +14,16 @@ FIRE_THRESHOLD = 0.35
 # so the status classifier knows no shape is geometrically relevant.
 MINIMUM_SHAPE_CONFIDENCE = 0.10
 
+# ── Domain familiarity dampening ──
+# The keyword-based gap detector cannot distinguish "water boils at 100C"
+# from "why do startups collapse" — both score similarly low on keywords.
+# When the content layer is very confident on factual material, that is
+# a strong signal that the input is in well-established territory and the
+# gap score should be reduced. This prevents textbook facts from getting
+# high gap scores just because their vocabulary doesn't match shape keywords.
+DOMAIN_DAMPENING_THRESHOLD = 0.90  # Content confidence must be at least this
+DOMAIN_DAMPENING_FACTOR = 0.62     # Reduce gap by this fraction
+
 
 def score_shape(input_text, shape):
     input_lower = input_text.lower()
@@ -55,3 +65,29 @@ def run(input_text, shape_library=None):
         "fires": fires,
         "all_scores": dict(sorted_shapes[:5])
     }
+
+
+def apply_domain_dampening(gap_score, content_result):
+    """
+    Pre-check for domain familiarity. Called after both the gap detector
+    and content layer have run.
+
+    The keyword-based gap detector treats "water boils at 100C" the same
+    as "why do startups collapse" because neither matches shape keywords.
+    But the content layer knows "water boils" is textbook knowledge.
+
+    When content confidence is very high AND the content succeeded, dampen
+    the gap score. The geometric analysis still ran — this just weights
+    the result by the domain familiarity signal.
+
+    Returns the dampened gap score. The original gap_score in the structure
+    dict is preserved for reporting; this dampened value is used only for
+    status classification.
+    """
+    content_confidence = content_result.get("confidence", 0)
+    content_success = content_result.get("success", False)
+
+    if content_confidence >= DOMAIN_DAMPENING_THRESHOLD and content_success:
+        return round(gap_score * (1.0 - DOMAIN_DAMPENING_FACTOR), 3)
+
+    return gap_score
