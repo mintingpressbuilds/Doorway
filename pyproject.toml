@@ -25,6 +25,7 @@ dependencies = [
     "python-dotenv",
     "fastapi",
     "uvicorn",
+    "doorway-memory",
 ]
 
 [project.scripts]
