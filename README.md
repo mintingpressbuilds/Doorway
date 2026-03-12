@@ -250,11 +250,63 @@ The next session — by any user — matches against a richer library. Gap score
 
 -----
 
+## Geometric Memory
+
+The shape library doesn't just store patterns — it remembers.
+
+doorway-memory is the geometric memory layer underneath the reasoning engine. Every confirmed bridge, every shape match, every reasoning session writes to memory as geometric territory. The library grows from use, shrinks from neglect, and produces cross-domain patterns nobody programmed.
+
+Point doorway-memory at your database, API, or codebase and it scans the structure and mints shapes automatically. Day one, the reasoning engine knows your system.
+
+The void is mapped as geometry. You can see exactly what the system doesn't know — not as an absence, but as regions with shape, size, and neighbors.
+
+Every memory operation is cryptographically chained via xycore. Provable, replayable history of everything the system has ever learned.
+
+```bash
+pip install doorway-memory
+```
+
+### Memory API
+
+The API server exposes memory at `/memory/*`:
+
+```bash
+# Store a shape
+curl -X POST http://localhost:8000/memory/store \
+  -H "Content-Type: application/json" \
+  -d '{"dimensions": {"risk": {"min": 0, "max": 0.8}, "growth": {"min": 0.2, "max": 1.0}}, "metadata": {"source": "bridge"}}'
+
+# Test a point against known territory
+curl -X POST http://localhost:8000/memory/test \
+  -H "Content-Type: application/json" \
+  -d '{"point": {"risk": 0.5, "growth": 0.6}}'
+
+# Scan a data source into shapes
+curl -X POST http://localhost:8000/memory/scan \
+  -H "Content-Type: application/json" \
+  -d '{"source_type": "json", "data": [{"age": 25, "score": 90}, {"age": 35, "score": 70}]}'
+
+# See what the system knows
+curl http://localhost:8000/memory/library
+
+# See what it doesn't know
+curl http://localhost:8000/memory/void
+
+# Chain timeline
+curl http://localhost:8000/memory/chain
+
+# Run decay — archive stale shapes
+curl -X POST http://localhost:8000/memory/maintain
+```
+
+-----
+
 ## Related Packages
 
 - [xycore](https://pypi.org/project/xycore/) — Cryptographic chain primitive
 - [pruv](https://pypi.org/project/pruv/) — Digital verification infrastructure
 - [vantagepoint](https://pypi.org/project/vantagepoint/) — Structured thinking methodology
+- [doorway-memory](https://pypi.org/project/doorway-memory/) — Geometric memory layer
 
 -----
 
